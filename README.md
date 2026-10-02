@@ -1,7 +1,7 @@
 # aws-static-website-game-s3-cloudfront
 Static Snake Game deployed on AWS using Amazon S3 and CloudFront, with documented architecture, deployment steps, and AWS lab troubleshooting.
 
-
+<br>
 This project documents my hands-on deployment of a simple Snake Game using Amazon S3 and Amazon CloudFront.
 
 I built the website using only HTML and CSS, and then used the AWS Skill Builder lab environment to upload the files to S3 and configure CloudFront. The purpose of this exercise was not just to deploy the website, but to understand the actual process of storing website files in S3, connecting S3 with CloudFront, and troubleshooting a permission-related problem during the setup.
@@ -81,7 +81,7 @@ After completing the S3 upload and CloudFront configuration, I was able to acces
 
 The final result was a working static Snake Game whose files were stored in Amazon S3 and accessed through the CloudFront distribution.
 
-*#What I Actually Practiced*
+**What I Actually Practiced**
 
 Through this deployment, I worked through the complete flow myself:
 
@@ -101,7 +101,7 @@ Used the direct /index.html path to access the website through CloudFront.
 
 Verified the final Snake Game deployment.
 
-*#AWS Services Used*
+**AWS Services Used**
 
 Amazon S3 — used to store the website files.
 
@@ -109,7 +109,7 @@ Amazon CloudFront — used to access and deliver the website through the CloudFr
 
 AWS Skill Builder — used as the hands-on lab environment.
 
-*#Lab Note*
+**Lab Note**
 
 The CloudFront URL shown in this documentation was created inside the temporary AWS Skill Builder lab environment. Because the lab environment is temporary, the URL may no longer be accessible after the lab session.
 
