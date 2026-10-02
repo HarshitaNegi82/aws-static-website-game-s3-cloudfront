@@ -81,7 +81,7 @@ After completing the S3 upload and CloudFront configuration, I was able to acces
 
 The final result was a working static Snake Game whose files were stored in Amazon S3 and accessed through the CloudFront distribution.
 
-What I Actually Practiced
+#What I Actually Practiced
 
 Through this deployment, I worked through the complete flow myself:
 
@@ -101,7 +101,7 @@ Used the direct /index.html path to access the website through CloudFront.
 
 Verified the final Snake Game deployment.
 
-AWS Services Used
+#AWS Services Used
 
 Amazon S3 — used to store the website files.
 
@@ -109,7 +109,7 @@ Amazon CloudFront — used to access and deliver the website through the CloudFr
 
 AWS Skill Builder — used as the hands-on lab environment.
 
-Lab Note
+#Lab Note
 
 The CloudFront URL shown in this documentation was created inside the temporary AWS Skill Builder lab environment. Because the lab environment is temporary, the URL may no longer be accessible after the lab session.
 
