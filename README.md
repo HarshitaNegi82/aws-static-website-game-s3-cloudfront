@@ -2,178 +2,115 @@
 Static Snake Game deployed on AWS using Amazon S3 and CloudFront, with documented architecture, deployment steps, and AWS lab troubleshooting.
 
 
+This project documents my hands-on deployment of a simple Snake Game using Amazon S3 and Amazon CloudFront.
+
+I built the website using only HTML and CSS, and then used the AWS Skill Builder lab environment to upload the files to S3 and configure CloudFront. The purpose of this exercise was not just to deploy the website, but to understand the actual process of storing website files in S3, connecting S3 with CloudFront, and troubleshooting a permission-related problem during the setup.
+
+1. Creating the S3 Bucket
+
+I started by creating an Amazon S3 bucket named:
+
+cfgame1234
+
+The bucket was created in the AWS Skill Builder lab environment.
+
 <p align="center">
-  <img src="images/game_display.png" alt="Snake Game deployed through Amazon CloudFront" width="750">
+  <img src="images/bucket_created.png" alt="S3 bucket cfgame1234" width="750">
 </p>
-## Architecture
 
-```text
-                    User Browser
-                         |
-                         | HTTPS
-                         v
-                 Amazon CloudFront
-                  (CDN / Delivery)
-                         |
-                         | Origin Request
-                         v
-                    Amazon S3
-                 (Static Assets)
-                         |
-                 +-------+-------+
-                 |               |
-             index.html      style.css
-```
+At this stage, my main objective was to create the storage location where I would keep the website files.
 
-### Request Flow
+2. Uploading the Website Files
 
-1. The user requests the game through the CloudFront distribution URL.
-2. CloudFront receives the request and acts as the content delivery layer.
-3. CloudFront retrieves the requested object from the S3 origin.
-4. The browser receives the static files and renders the game.
+After creating the bucket, I uploaded the two files required for the website:
 
-## AWS Services Used
-
-| Service | Role |
-|---|---|
-| Amazon S3 | Stores the static website files |
-| Amazon CloudFront | Delivers the website content through a CDN |
-
-## Implementation
-
-### 1. Amazon S3
-
-A general-purpose S3 bucket named `cfgame1234` was created for the project.
-
-The bucket contains the static website assets:
-
-```text
 index.html
 style.css
-```
 
-The S3 configuration used in the lab included:
+index.html contains the structure and content of the Snake Game, while style.css contains its styling.
 
-- Block all public access enabled
-- Static website files uploaded to the bucket
-- S3 used as the origin for the CloudFront distribution
+<p align="center">
+  <img src="images/objects_created.png" alt="index.html and style.css uploaded to S3" width="750">
+</p>
 
-### 2. Amazon CloudFront
+This gave me the basic website files inside the S3 bucket.
 
-A CloudFront distribution was created with the S3 bucket configured as the origin.
+3. Setting Up Amazon CloudFront
 
-The deployed distribution is:
+Once the files were uploaded to S3, the next step was to put Amazon CloudFront in front of the S3 content.
 
-```text
-https://d9rdsyjskw9cj.cloudfront.net
-```
+I created a CloudFront distribution and selected the S3 bucket as the origin.
 
-The game is accessed using:
+<p align="center">
+  <img src="images/cloudfront.png" alt="CloudFront distribution configured for the S3 bucket" width="750">
+</p>
 
-```text
+The idea was to access the website through the CloudFront distribution instead of working only with the S3 bucket.
+
+4. Problem I Faced
+
+While configuring CloudFront, I tried to use index.html as the Default Root Object.
+
+However, the AWS Skill Builder lab identity did not have permission to update the CloudFront distribution. The error indicated that the required permission was:
+
+cloudfront:UpdateDistribution
+
+So I could not simply change the CloudFront configuration or modify the IAM permissions myself.
+
+This was an actual restriction of the lab environment, not an error in the website files.
+
+5. How I Solved It
+
+Instead of trying to bypass the permission restriction, I looked for another way to access the file that was already available through the CloudFront distribution.
+
+I used the direct path:
+
 https://d9rdsyjskw9cj.cloudfront.net/index.html
-```
 
-## Security Configuration
+The important part here was that I already knew the actual filename was index.html, so I requested that file directly rather than relying on the default root object configuration.
 
-The S3 bucket was configured with **Block all public access enabled** in the lab environment.
+This allowed me to continue testing the deployed website without changing the restricted IAM configuration.
 
-This keeps the S3 bucket from being directly exposed through public bucket access. The application is accessed through the CloudFront distribution.
+6. Final Result
 
-The exact CloudFront-to-S3 authorization mechanism should be documented according to the configuration actually enabled on the distribution. This repository does not claim OAI/OAC unless it is verified from the distribution configuration.
-
-## Engineering Challenge: Restricted CloudFront Permissions
-
-### Problem
-
-The AWS Skill Builder lab environment used a restricted IAM identity.
-
-When attempting to configure the CloudFront **Default Root Object** as `index.html`, the operation was blocked because the lab identity did not have the required `cloudfront:UpdateDistribution` permission.
-
-As a result, the root URL:
-
-```text
-https://d9rdsyjskw9cj.cloudfront.net/
-```
-
-could not be configured to automatically resolve to `index.html`.
-
-### Workaround
-
-Instead of modifying IAM permissions or attempting to bypass the lab restrictions, the exact object path was requested directly:
-
-```text
-https://d9rdsyjskw9cj.cloudfront.net/index.html
-```
-
-This allowed the application to be successfully delivered through CloudFront without requiring a distribution update.
-
-## Screenshots
-
-### Deployed Game
+After completing the S3 upload and CloudFront configuration, I was able to access the Snake Game through the CloudFront URL.
 
 <p align="center">
-  <img src="docs/images/game_display.png" alt="Snake Game deployed through Amazon CloudFront" width="750">
+  <img src="images/game_display.png" alt="Snake Game deployed through CloudFront" width="750">
 </p>
 
-### CloudFront Distribution
+The final result was a working static Snake Game whose files were stored in Amazon S3 and accessed through the CloudFront distribution.
 
-<p align="center">
-  <img src="docs/images/cloudfront.png" alt="Amazon CloudFront distribution configuration" width="750">
-</p>
+What I Actually Practiced
 
-### S3 Bucket
+Through this deployment, I worked through the complete flow myself:
 
-<p align="center">
-  <img src="docs/images/bucket_created.png" alt="Amazon S3 bucket created for the project" width="750">
-</p>
+Created the S3 bucket cfgame1234.
 
-### S3 Objects
+Uploaded index.html and style.css.
 
-<p align="center">
-  <img src="docs/images/objects_created.png" alt="Static website objects stored in Amazon S3" width="750">
-</p>
+Created a CloudFront distribution using the S3 bucket as the origin.
 
-## Project Structure
+Encountered an IAM permission restriction while configuring the Default Root Object.
 
-```text
-snake-game-s3-cloudfront/
-├── website/
-│   ├── index.html
-│   └── style.css
-├── docs/
-│   └── images/
-│       ├── bucket_created.png
-│       ├── cloudfront.png
-│       ├── game_display.png
-│       └── objects_created.png
-├── .gitignore
-└── README.md
-```
+Identified the missing cloudfront:UpdateDistribution permission.
 
-## Key Takeaways
+Decided not to modify or bypass the lab's IAM restrictions.
 
-- Practiced creating and configuring an Amazon S3 bucket.
-- Stored static website assets in S3.
-- Created an Amazon CloudFront distribution with S3 as the origin.
-- Understood the relationship between object storage and CDN-based content delivery.
-- Worked with S3 Block Public Access settings.
-- Troubleshot a CloudFront configuration issue caused by restricted IAM permissions.
-- Used a direct object path as a practical workaround without changing restricted lab permissions.
+Used the direct /index.html path to access the website through CloudFront.
 
-## Future Improvements
+Verified the final Snake Game deployment.
 
-- Configure a custom domain for the CloudFront distribution.
-- Configure the CloudFront Default Root Object in an account with the required permissions.
-- Evaluate AWS WAF for a production-oriented deployment.
-- Enable appropriate CloudFront logging and monitoring.
-- Explore automated deployment through CI/CD.
+AWS Services Used
 
-## Learning Environment
+Amazon S3 — used to store the website files.
 
-This project was implemented as hands-on practice using AWS Skill Builder.
+Amazon CloudFront — used to access and deliver the website through the CloudFront distribution.
 
-The configuration and permissions available in a learning lab can differ from those available in a production AWS account.
+AWS Skill Builder — used as the hands-on lab environment.
 
+Lab Note
+
+The CloudFront URL shown in this documentation was created inside the temporary AWS Skill Builder lab environment. Because the lab environment is temporary, the URL may no longer be accessible after the lab session.
 
 
