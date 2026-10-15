@@ -81,6 +81,37 @@ After completing the S3 upload and CloudFront configuration, I was able to acces
 
 The final result was a working static Snake Game whose files were stored in Amazon S3 and accessed through the CloudFront distribution.
 
+## Run the Snake Game Locally Using Docker
+
+### Run this game locally in 10 seconds using Docker
+
+
+
+```bash
+docker run --rm -p 8080:80 pikapi08/snake-game:v1
+```
+
+Open browser and visit: **http://localhost:8080**
+
+That's it! Docker automatically downloads the image if it isn't available locally, creates a container, and serves the Snake Game using Nginx.
+
+Press `Ctrl + C` in the terminal to stop the container.
+
+### Useful Docker Commands
+
+```bash
+# Check running containers
+docker ps
+
+# View container logs
+docker logs CONTAINER_ID
+
+# List downloaded images
+docker images
+```
+
+
+
 **What I Actually Practiced**
 
 Through this deployment, I worked through the complete flow myself:
